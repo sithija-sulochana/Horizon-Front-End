@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-
+import loadingBar from "@/components/ui/loadingBar"
 export default function BookingHistory() {
   const { data: bookings, error: bookingError, isLoading: bookingLoading } = useGetUserBookingsQuery()
   const { data: hotels, error: hotelError, isLoading: hotelLoading } = useGetHotelsQuery()
@@ -123,7 +123,9 @@ export default function BookingHistory() {
   // Loading state with better UI
   if (bookingLoading || hotelLoading) {
     return (
+    
       <div className="container mx-auto py-8 px-4">
+        <loadingBar />
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Booking History</h2>
           <div className="w-1/3 bg-gray-200 h-10 animate-pulse rounded-md"></div>

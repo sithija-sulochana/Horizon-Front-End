@@ -11,6 +11,9 @@ import { AlertCircle, Hotel, Search, SlidersHorizontal, ArrowUpDown, MapPin, Ref
 import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import BlurText from "@/components/ui/BlurText"
+import Description from "@/components/TravelStatus"
+
 
 export default function HotelListings() {
   const { data: hotels = [], isLoading, isError, error, refetch } = useGetHotelsQuery()
@@ -99,6 +102,10 @@ export default function HotelListings() {
     setMinRating("")
   }
 
+  const handleAnimationComplete = () => {
+    console.log('Animation completed!');
+  };  
+
   // Animation variants for hotel cards
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -122,11 +129,17 @@ export default function HotelListings() {
           <Hotel className="h-6 w-6 text-primary" />
           <h2 className="text-3xl md:text-4xl font-bold">Top trending hotels worldwide</h2>
         </div>
-        <p className="text-lg text-muted-foreground max-w-3xl">
-          Discover the most trending hotels worldwide for an unforgettable experience. Filter by location, price, and
-          more to find your perfect stay.
-        </p>
+        <BlurText
+          text="Discover the most trending hotels worldwide for an unforgettable experience. Filter by location, price, and
+          more to find your perfect stay!"
+          delay={150}
+          animateBy="words"
+          direction="top"
+          onAnimationComplete={handleAnimationComplete}
+          className="text-[20px] mb-8 text-muted-foreground font-light "
+        />
       </div>
+
 
       {/* Search and Filter Bar */}
       <div className="mb-6 flex flex-col md:flex-row gap-4">
@@ -228,6 +241,7 @@ export default function HotelListings() {
             </TabsTrigger>
           ))}
         </TabsList>
+  
       </Tabs>
 
       {/* Loading State */}
@@ -293,6 +307,7 @@ export default function HotelListings() {
           )}
         </>
       )}
+        <Description />
     </section>
   )
 }

@@ -10,7 +10,7 @@ import HotelPage from "./pages/hotel.page";
 import AccountPage from "./pages/account-page";
 import CreateHotelPage from "./pages/create-hotel.page";
 import ProtectedLayout from "./layouts/protected.layout";
-
+import SplashCursor from "@/components/ui/SplashCurso";
 import SignInPage from "./pages/sign-in.page";
 import SignUpPage from "./pages/sign-up.page";
 import { store } from "./lib/store";
@@ -30,6 +30,7 @@ createRoot(document.getElementById("root")).render(
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <Provider store={store}>
         <BrowserRouter>
+        <SplashCursor />
           <Routes>
             <Route element={<RootLayout />}>
               <Route element={<MainLayout />}>

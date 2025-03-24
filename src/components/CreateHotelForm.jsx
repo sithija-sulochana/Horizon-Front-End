@@ -1,4 +1,14 @@
 "use client"
+{/** I added some couple of changes for creating hotel page out of the course content. The changes are like this
+  
+  * You can add some hotels through the hotel booking page;
+  * Create a attractfull and user-friendly design UI and UX for the page.
+  * When You are adding  a picture for the hotel, you can see a preview of this picture. 
+  * 
+  
+  */}
+
+
 
 import { useState } from "react"
 import { z } from "zod"
@@ -26,6 +36,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Building2, Camera, Hotel, MapPin, Star } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
+
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Hotel name is required" }),
@@ -112,11 +123,15 @@ const CreateHotelForm = () => {
   }
 
   return (
+    
     <Card className="w-full max-w-4xl mx-auto shadow-lg">
+      
       <CardHeader className="space-y-1">
+        
         <div className="flex items-center gap-2">
           <Hotel className="h-6 w-6 text-primary" />
           <CardTitle className="text-2xl">Create New Hotel</CardTitle>
+
         </div>
         <CardDescription>Fill in the details below to add a new hotel to your inventory</CardDescription>
       </CardHeader>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Sparkles, MapPin, TrendingUp, Search } from "lucide-react"
-
+import TrueFocus from "@/components/ui/TrueForcus";
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
@@ -67,9 +67,14 @@ export default function Hero() {
           <TrendingUp className="w-4 h-4 mr-2" /> Trending Destinations
         </Badge>
 
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 text-center leading-tight max-w-4xl animate-fade-in">
-          Find Your Perfect <span className="text-primary text-gray">Staycation</span>
-        </h1>
+        <TrueFocus
+          sentence="Find Your Perfect Staycation"
+          manualMode={false}
+          blurAmount={5}
+          borderColor="red"
+          animationDuration={2}
+          pauseBetweenAnimations={1}
+        />
 
         <p className="text-lg md:text-xl mb-8 md:mb-12 text-center max-w-2xl text-white/80 animate-fade-in-delay">
           Describe your dream destination and experience, and we'll find the perfect place for you.
