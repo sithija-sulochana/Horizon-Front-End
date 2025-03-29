@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const BACKEND_URL = "https://horizonbackend-production-8089.up.railway.app/";
+const BACKEND_URL = "https://horizonbackend-production-8089.up.railway.app";
 
 export const api = createApi({
   reducerPath: "api",
