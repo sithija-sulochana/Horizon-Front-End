@@ -4,6 +4,8 @@ import { Users, Building2, MapPin } from "lucide-react"
 import CountUp from "@/components/ui/countUp"
 import GridMotion from "@/components/ui/GridMotion"
 
+import Footer from "@/components/footer"
+
 export default function TravelStatistics() {
   // note: you'll need to make sure the parent container of this component is sized properly
   const items = [
@@ -115,7 +117,12 @@ export default function TravelStatistics() {
       <div className="mt-[30px] p-[10px] h-[10%] py-10">
         <h2 className="text-2xl font-bold text-center mb-8 text-gray-800">Explore Dream Destinations</h2>
         <GridMotion items={items} />
+      
+
       </div>
+
+     
+
     </div>
   )
 }

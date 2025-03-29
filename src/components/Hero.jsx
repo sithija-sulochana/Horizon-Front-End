@@ -6,9 +6,12 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Sparkles, MapPin, TrendingUp, Search } from "lucide-react"
 import TrueFocus from "@/components/ui/TrueForcus";
+import { useDispatch,useSelector } from "react-redux";
+import { submit } from "@/lib/searchSlice"
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
+  const dispatch = useDispatch();
 
   const popularDestinations = [
     { name: "New York", type: "City Break" },
@@ -20,6 +23,10 @@ export default function Hero() {
 
   const handleSearch = (e) => {
     e.preventDefault()
+    const searchQuery = e.target.search.value;
+    console.log(searchQuery);
+
+    dispatch(submit(searchQuery));
     if (!searchQuery.trim()) return
 
     setIsSearching(true)
@@ -88,6 +95,7 @@ export default function Hero() {
           <Search className="ml-4 w-5 h-5 text-white/70" />
           <Input
             type="text"
+            name="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="A beachfront resort with infinity pool in Bali..."

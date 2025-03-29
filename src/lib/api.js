@@ -1,17 +1,18 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const BACKEND_URL = "http://localhost:8000"
+const BACKEND_URL = "http://localhost:8000";
 
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: `${BACKEND_URL}/api/`,
     prepareHeaders: async (headers, { getState }) => {
-      const token = await window?.Clerk?.session?.getToken()
-      console.log(token)
+      const token = await window?.Clerk?.session?.getToken();
+      console.log(token);
       if (token) {
-        headers.set("Authorization", `Bearer ${token}`)
+        headers.set("Authorization", `Bearer ${token}`);
       }
+      return headers;
     },
   }),
   tagTypes: ["Hotels", "Bookings"],
@@ -20,10 +21,17 @@ export const api = createApi({
       query: () => "hotels",
       providesTags: ["Hotels"],
     }),
+
+    getHotelsForSearchQuery: builder.query({
+      query: ({ query }) => `hotels/search/retrieve?query=${query}`,
+      providesTags: ["Hotels"],
+    }),
+
     getHotelById: builder.query({
       query: (id) => `hotels/${id}`,
       providesTags: (result, error, id) => [{ type: "Hotels", id }],
     }),
+
     createHotel: builder.mutation({
       query: (hotel) => ({
         url: "hotels",
@@ -32,6 +40,7 @@ export const api = createApi({
       }),
       invalidatesTags: ["Hotels"],
     }),
+
     createBooking: builder.mutation({
       query: (booking) => ({
         url: "bookings",
@@ -40,17 +49,19 @@ export const api = createApi({
       }),
       invalidatesTags: ["Bookings"],
     }),
+
     getUserBookings: builder.query({
-      query: () => "bookings",  // Changed from "bookings/user" to "bookings"
+      query: () => "bookings",
       providesTags: ["Bookings"],
     }),
   }),
-})
+});
 
 export const {
   useGetHotelsQuery,
+  useGetHotelsForSearchQueryQuery,
   useGetHotelByIdQuery,
   useCreateHotelMutation,
   useCreateBookingMutation,
   useGetUserBookingsQuery,
-} = api
+} = api;

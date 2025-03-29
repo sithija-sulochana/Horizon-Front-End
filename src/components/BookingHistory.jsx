@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useGetUserBookingsQuery, useGetHotelsQuery } from "@/lib/api"
-import { CalendarDays, Search, Download, Printer, Eye, FileEdit, XCircle, ArrowUpDown } from "lucide-react"
+import { CalendarDays, Search, Download, Printer, Eye, FileEdit, XCircle, ArrowUpDown, Loader2 } from "lucide-react"
 
 // Import the shadcn/ui components
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -15,9 +15,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import loadingBar from "@/components/ui/loadingBar"
+
 export default function BookingHistory() {
-  const { data: bookings, error: bookingError, isLoading: bookingLoading } = useGetUserBookingsQuery()
+  const { data: bookings, error: bookingError, isLoading: bookingLoading } =  useGetUserBookingsQuery()
   const { data: hotels, error: hotelError, isLoading: hotelLoading } = useGetHotelsQuery()
 
   const [validatedBookings, setValidatedBookings] = useState([])
@@ -123,9 +123,11 @@ export default function BookingHistory() {
   // Loading state with better UI
   if (bookingLoading || hotelLoading) {
     return (
-    
       <div className="container mx-auto py-8 px-4">
-        <loadingBar />
+        <div className="flex items-center justify-center mb-6">
+          <Loader2 className="h-6 w-6 text-primary animate-spin mr-2" />
+          <span className="text-lg font-medium">Loading your booking history...</span>
+        </div>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">Booking History</h2>
           <div className="w-1/3 bg-gray-200 h-10 animate-pulse rounded-md"></div>

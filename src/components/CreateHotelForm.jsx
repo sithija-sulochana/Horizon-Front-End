@@ -496,4 +496,3 @@ const CreateHotelForm = () => {
 }
 
 export default CreateHotelForm
-

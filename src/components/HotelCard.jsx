@@ -5,10 +5,10 @@ import { MapPin, Star, Heart, Award, Wifi, Coffee, Tag } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Link } from "react-router"
+import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 
-function HotelCard({ hotel, className }) {
+function HotelCard({ hotel, confidence, className }) {
   const [isFavorite, setIsFavorite] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
@@ -138,6 +138,9 @@ function HotelCard({ hotel, className }) {
               <span className="text-xl font-bold">${hotel.price}</span>
               <span className="text-sm text-muted-foreground ml-1">/ night</span>
             </div>
+            {confidence && (
+              <p className="text-muted-foreground text-sm">Similarity: {(confidence * 100).toFixed(2)}%</p>
+            )}
             <Button
               variant="ghost"
               size="sm"

@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useGetHotelsQuery } from "@/lib/api"
+import { useSelector } from "react-redux"
+import { useGetHotelsForSearchQueryQuery, useGetHotelsQuery } from "@/lib/api"
 import HotelCard, { HotelCardSkeleton } from "./HotelCard"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,16 +15,49 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import BlurText from "@/components/ui/BlurText"
 import Description from "@/components/TravelStatus"
 
-
 export default function HotelListings() {
-  const { data: hotels = [], isLoading, isError, error, refetch } = useGetHotelsQuery()
+  // Get search value from Redux store
+  const searchValue = useSelector((state) => state.search.value)
+
+  // Determine which API to use based on whether there's a search value
+  const useSearchQuery = searchValue && searchValue.trim() !== ""
+  console.log(useSearchQuery)
+  // Fetch hotels with search query if available, otherwise fetch all hotels
+  const {
+    data: searchHotelsData,
+    isLoading: isSearchLoading,
+    isError: isSearchError,
+    error: searchError,
+    refetch: refetchSearch,
+  } = useGetHotelsForSearchQueryQuery({ query: searchValue }, { skip: !useSearchQuery })
+
+  const {
+    data: allHotels ,
+    isLoading: isAllHotelsLoading,
+    isError: isAllHotelsError,
+    error: allHotelsError,
+    refetch: refetchAllHotels,
+  } = useGetHotelsQuery(undefined, { skip: useSearchQuery })
+
+  // Combine data from both queries
+  const isLoading = useSearchQuery ? isSearchLoading : isAllHotelsLoading
+  const isError = useSearchQuery ? isSearchError : isAllHotelsError
+  const error = useSearchQuery ? searchError : allHotelsError
+ 
+  console.log(allHotels)
+  console.log(searchHotelsData)
+
+  // Extract hotels from the response data structure
+  const hotels = useSearchQuery ? searchHotelsData: allHotels
 
   // Locations derived from hotel data with counts
   const getLocations = () => {
     if (!hotels || hotels.length === 0) return [{ name: "ALL", count: 0 }]
 
     const locationCounts = hotels.reduce((acc, hotel) => {
-      const location = hotel.location.split(",")[0].trim() // Get first part of location (city)
+      // Handle both data structures (direct hotel object or {hotel, confidence} object)
+      const hotelData = hotel.hotel ? hotel.hotel : hotel
+      const location = hotelData.location.split(",")[0].trim() // Get first part of location (city)
       acc[location] = (acc[location] || 0) + 1
       return acc
     }, {})
@@ -59,7 +93,10 @@ export default function HotelListings() {
   const filteredHotels = !hotels
     ? []
     : hotels
-        .filter((hotel) => {
+        .filter((item) => {
+          // Handle both data structures (direct hotel object or {hotel, confidence} object)
+          const hotel = item.hotel ? item.hotel : item
+
           // Location filter
           const locationMatch =
             selectedLocation === "ALL" || hotel.location.toLowerCase().includes(selectedLocation.toLowerCase())
@@ -81,13 +118,17 @@ export default function HotelListings() {
           return locationMatch && searchMatch && priceMatch && ratingMatch
         })
         .sort((a, b) => {
+          // Handle both data structures for sorting
+          const hotelA = a.hotel ? a.hotel : a
+          const hotelB = b.hotel ? b.hotel : b
+
           switch (sortOption) {
             case "price-low":
-              return a.price - b.price
+              return hotelA.price - hotelB.price
             case "price-high":
-              return b.price - a.price
+              return hotelB.price - hotelA.price
             case "rating":
-              return b.rating - a.rating
+              return hotelB.rating - hotelA.rating
             default: // recommended
               return 0 // No specific sorting
           }
@@ -103,8 +144,8 @@ export default function HotelListings() {
   }
 
   const handleAnimationComplete = () => {
-    console.log('Animation completed!');
-  };  
+    console.log("Animation completed!")
+  }
 
   // Animation variants for hotel cards
   const containerVariants = {
@@ -140,7 +181,6 @@ export default function HotelListings() {
         />
       </div>
 
-
       {/* Search and Filter Bar */}
       <div className="mb-6 flex flex-col md:flex-row gap-4">
         <div className="relative flex-grow">
@@ -169,7 +209,6 @@ export default function HotelListings() {
               <SelectItem value="rating">Highest Rated</SelectItem>
             </SelectContent>
           </Select>
-
           <Button variant="outline" onClick={() => setShowFilters(!showFilters)} className="gap-2">
             <SlidersHorizontal className="h-4 w-4" />
             Filters
@@ -241,7 +280,6 @@ export default function HotelListings() {
             </TabsTrigger>
           ))}
         </TabsList>
-  
       </Tabs>
 
       {/* Loading State */}
@@ -290,11 +328,21 @@ export default function HotelListings() {
                 initial="hidden"
                 animate="show"
               >
-                {filteredHotels.map((hotel) => (
-                  <motion.div key={hotel._id} variants={itemVariants}>
-                    <HotelCard hotel={hotel} />
-                  </motion.div>
-                ))}
+                {filteredHotels.map((item) => {
+                  // Check if item has hotel and confidence properties (API structure)
+                  const hotelData = item.hotel ? item.hotel : item
+                  const confidence = item.confidence
+
+                  return (
+                    <motion.div key={hotelData._id || item._id} variants={itemVariants}>
+                      {confidence ? (
+                        <HotelCard hotel={hotelData} confidence={confidence} />
+                      ) : (
+                        <HotelCard hotel={hotelData} />
+                      )}
+                    </motion.div>
+                  )
+                })}
               </motion.div>
             </AnimatePresence>
           ) : (
@@ -307,7 +355,7 @@ export default function HotelListings() {
           )}
         </>
       )}
-        <Description />
+      <Description />
     </section>
   )
 }

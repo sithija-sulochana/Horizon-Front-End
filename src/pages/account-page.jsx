@@ -15,6 +15,7 @@ const AccountPage = () => {
         <h2 className="text-xl md:text-2xl font-semibold mb-4">
           Personal Information
         </h2>
+   
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <p className="text-muted-foreground">Name: {user?.fullName}</p>
